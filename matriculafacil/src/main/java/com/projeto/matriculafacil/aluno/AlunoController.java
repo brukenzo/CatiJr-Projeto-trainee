@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projeto.matriculafacil.security.JwtService;
+
 @RestController
 @RequestMapping("/aluno")
 public class AlunoController {
@@ -16,6 +18,9 @@ public class AlunoController {
     @Autowired
     private IAlunoRepository alunoRepository;
 
+    @Autowired
+    private JwtService jwtService;
+    
     // Realiza o cadastro do aluno
     @PostMapping("/")
     public ResponseEntity create(@RequestBody AlunoModel alunoModel){
@@ -33,4 +38,27 @@ public class AlunoController {
         var alunoCriado = this.alunoRepository.save(alunoModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoCriado);
     }
+
+    // Realiza o login do aluno
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody AlunoModel alunoModel){
+
+        var alunoOptional = this.alunoRepository.findByEmail(alunoModel.getEmail());
+
+        if (!alunoOptional.isPresent()){ // O email digitado não foi encontrado
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("O email está incorreto");
+        }
+
+        var aluno = alunoOptional.get();
+
+        var senhaValida = new BCryptPasswordEncoder().matches(alunoModel.getSenha(), aluno.getSenha());
+
+        if (!senhaValida){ // A senha digitada está incorreta
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("A senha está incorreta");
+        }
+
+        // Gera o token
+        var token = jwtService.generateToken(aluno.getAlunoID().toString());
+        return ResponseEntity.ok(token);
+    }   
 }
