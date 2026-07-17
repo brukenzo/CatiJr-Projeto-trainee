@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto.matriculafacil.security.JwtService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/aluno")
 public class AlunoController {
