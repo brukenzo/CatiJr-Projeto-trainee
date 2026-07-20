@@ -49,7 +49,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
       }
 
     } catch (erro) {
-      setMensagemErro('Erro de conexão com o servidor Java!')
+      setMensagemErro('Erro de conexão com o servidor')
     }
   }
 
