@@ -3,9 +3,15 @@ package com.projeto.matriculafacil.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.projeto.matriculafacil.matricula.MatriculaModel;
+import com.projeto.matriculafacil.aluno.AlunoModel;
+import com.projeto.matriculafacil.aluno.IAlunoRepository;
 import com.projeto.matriculafacil.materia.IMateriaRepository;
 import com.projeto.matriculafacil.materia.MateriaModel;
+import com.projeto.matriculafacil.matricula.IMatriculaRepository;
 
 // Inicializa o banco de dados com algumas matérias
 @Configuration
@@ -13,6 +19,12 @@ public class DataInitializerSeed implements CommandLineRunner{
     
     @Autowired
     private IMateriaRepository materiaRepository;
+
+    @Autowired
+    private IAlunoRepository alunoRepository;
+
+    @Autowired
+    private IMatriculaRepository matriculaRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -89,7 +101,36 @@ public class DataInitializerSeed implements CommandLineRunner{
             met1.setProfessor("Marcela");
             met1.setDescricao("Introduzir os algoritmos básicos em alto nível.");
             this.materiaRepository.save(met1);
+        }
+        // Criar o aluno com email "bruno@teste.com"
+        var alunoExistente = this.alunoRepository.findByEmail("bruno@teste.com");
+        if (!alunoExistente.isPresent()) {
+            MateriaModel[] materiaConcluir = {
+                this.materiaRepository.findByCodigoMateria("MAT101").get()
+            };
+            criaAlunoExemplo(materiaConcluir);
+        }
+    }
 
+    // Cria um aluno teste mockado
+    private void criaAlunoExemplo(MateriaModel[] materiaConcluir){
+        var alunoExemplo = new AlunoModel();
+        alunoExemplo.setNome("Bruno Kenzo");
+        alunoExemplo.setEmail("bruno@teste.com");
+
+        var senhaCriptografado = new BCryptPasswordEncoder().encode("123");
+        alunoExemplo.setSenha(senhaCriptografado);
+
+        var alunoSalvo = this.alunoRepository.save(alunoExemplo);
+
+        // Vinculando algumas matérias como "CONCLUIDA" no histórico
+        for (MateriaModel materia : materiaConcluir){
+            var historicoMatricula = new MatriculaModel();
+            historicoMatricula.setAlunoID(alunoSalvo.getAlunoID());
+            historicoMatricula.setMateriaID(materia.getMateriaID());
+            historicoMatricula.setStatus("CONCLUIDA");
+
+            this.matriculaRepository.save(historicoMatricula);
         }
     }
 }
