@@ -1,4 +1,4 @@
-package com.projeto.matriculafacil.aluno.dto;
+package com.projeto.matriculafacil.dto;
 
 import java.util.UUID;
 
