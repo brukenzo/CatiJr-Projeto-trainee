@@ -67,16 +67,16 @@ public class DataInitializerSeed implements CommandLineRunner{
             this.materiaRepository.save(calc3);
 
             // AED 1 
-            var alg1 = new MateriaModel();
-            alg1.setCodigoMateria("COMP101");
-            alg1.setNome("Algoritmos e Estrutura de Dados 1");
-            alg1.setCredito(8);
-            alg1.setQtdVagas(60);
-            alg1.setHorario("Seg 08:00 - 12:00");
-            alg1.setPreRequisito("NENHUM");
-            alg1.setProfessor("Mário");
-            alg1.setDescricao("Ordenação e árvores.");
-            this.materiaRepository.save(alg1);
+            var aed1 = new MateriaModel();
+            aed1.setCodigoMateria("COMP101");
+            aed1.setNome("Algoritmos e Estrutura de Dados 1");
+            aed1.setCredito(8);
+            aed1.setQtdVagas(60);
+            aed1.setHorario("Seg 08:00 - 12:00");
+            aed1.setPreRequisito("NENHUM");
+            aed1.setProfessor("Mário");
+            aed1.setDescricao("Ordenação e árvores.");
+            this.materiaRepository.save(aed1);
 
             // Física 1 
             var fis1 = new MateriaModel();
@@ -91,18 +91,18 @@ public class DataInitializerSeed implements CommandLineRunner{
             this.materiaRepository.save(fis1);
 
             // IPA
-            var met1 = new MateriaModel();
-            met1.setCodigoMateria("COMP110");
-            met1.setNome("Introdução ao Pensamento Algorítmico");
-            met1.setCredito(2);
-            met1.setQtdVagas(60);
-            met1.setHorario("Sex 14:00 - 16:00");
-            met1.setPreRequisito("NENHUM");
-            met1.setProfessor("Marcela");
-            met1.setDescricao("Introduzir os algoritmos básicos em alto nível.");
-            this.materiaRepository.save(met1);
+            var ipa = new MateriaModel();
+            ipa.setCodigoMateria("COMP110");
+            ipa.setNome("Introdução ao Pensamento Algorítmico");
+            ipa.setCredito(2);
+            ipa.setQtdVagas(60);
+            ipa.setHorario("Sex 14:00 - 16:00");
+            ipa.setPreRequisito("NENHUM");
+            ipa.setProfessor("Marcela");
+            ipa.setDescricao("Introduzir os algoritmos básicos em alto nível.");
+            this.materiaRepository.save(ipa);
         }
-        // Criar o aluno com email "bruno@teste.com"
+        // Cria o aluno com email "bruno@teste.com"
         var alunoExistente = this.alunoRepository.findByEmail("bruno@teste.com");
         if (!alunoExistente.isPresent()) {
             MateriaModel[] materiaConcluir = {
@@ -123,7 +123,7 @@ public class DataInitializerSeed implements CommandLineRunner{
 
         var alunoSalvo = this.alunoRepository.save(alunoExemplo);
 
-        // Vinculando algumas matérias como "CONCLUIDA" no histórico
+        // Seta algumas matérias como "CONCLUIDA" no histórico
         for (MateriaModel materia : materiaConcluir){
             var historicoMatricula = new MatriculaModel();
             historicoMatricula.setAlunoID(alunoSalvo.getAlunoID());
