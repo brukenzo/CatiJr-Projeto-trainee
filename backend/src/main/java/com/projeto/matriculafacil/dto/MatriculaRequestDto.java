@@ -2,9 +2,9 @@ package com.projeto.matriculafacil.dto;
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record MatriculaRequestDto(
-    @NotBlank(message = "O ID da matéria é obrigatório")
+    @NotNull(message = "O ID da matéria é obrigatório")
     UUID materiaID
 ) {}

@@ -1,9 +1,7 @@
 package com.projeto.matriculafacil.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.projeto.matriculafacil.matricula.MatriculaModel;
@@ -13,18 +11,17 @@ import com.projeto.matriculafacil.materia.MateriaRepository;
 import com.projeto.matriculafacil.materia.MateriaModel;
 import com.projeto.matriculafacil.matricula.MatriculaRepository;
 
+import lombok.RequiredArgsConstructor;
+
 // Inicializa o banco de dados com algumas matérias
 @Configuration
+@RequiredArgsConstructor
 public class DataInitializerSeed implements CommandLineRunner{
     
-    @Autowired
-    private MateriaRepository materiaRepository;
-
-    @Autowired
-    private AlunoRepository alunoRepository;
-
-    @Autowired
-    private MatriculaRepository matriculaRepository;
+    private final MateriaRepository materiaRepository;
+    private final AlunoRepository alunoRepository;
+    private final MatriculaRepository matriculaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -103,10 +100,10 @@ public class DataInitializerSeed implements CommandLineRunner{
             this.materiaRepository.save(ipa);
         }
         // Cria o aluno com email "bruno@teste.com"
-        var alunoExistente = this.alunoRepository.findByEmail("bruno@teste.com");
+        var alunoExistente = alunoRepository.findByEmail("bruno@teste.com");
         if (!alunoExistente.isPresent()) {
             MateriaModel[] materiaConcluir = {
-                this.materiaRepository.findByCodigoMateria("MAT101").get()
+                materiaRepository.findByCodigoMateria("MAT101").orElseThrow()
             };
             criaAlunoExemplo(materiaConcluir);
         }
@@ -117,11 +114,9 @@ public class DataInitializerSeed implements CommandLineRunner{
         var alunoExemplo = new AlunoModel();
         alunoExemplo.setNome("Bruno Kenzo");
         alunoExemplo.setEmail("bruno@teste.com");
+        alunoExemplo.setSenha(passwordEncoder.encode("1234567"));
 
-        var senhaCriptografado = new BCryptPasswordEncoder().encode("123");
-        alunoExemplo.setSenha(senhaCriptografado);
-
-        var alunoSalvo = this.alunoRepository.save(alunoExemplo);
+        var alunoSalvo = alunoRepository.save(alunoExemplo);
 
         // Seta algumas matérias como "CONCLUIDA" no histórico
         for (MateriaModel materia : materiaConcluir){
@@ -130,7 +125,7 @@ public class DataInitializerSeed implements CommandLineRunner{
             historicoMatricula.setMateriaID(materia.getMateriaID());
             historicoMatricula.setStatus("CONCLUIDA");
 
-            this.matriculaRepository.save(historicoMatricula);
+            matriculaRepository.save(historicoMatricula);
         }
     }
 }
