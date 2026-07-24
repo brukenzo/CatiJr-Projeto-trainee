@@ -16,14 +16,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter{
-    @Autowired
-    JwtService jwtService;
-
-    @Autowired
-    IAlunoRepository alunoRepository;
+    
+    private final JwtService jwtService;
+    private final IAlunoRepository alunoRepository;
 
     @Override // Faz a validação do token
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -31,20 +31,16 @@ public class SecurityFilter extends OncePerRequestFilter{
         
         String header = request.getHeader("Authorization");
 
-        if (header != null){
-            var conteudoToken = jwtService.validateToken(header);
+        if (header != null && header.startsWith("Bearer ")) {
+            var token = header.substring("Bearer ".length());
 
-            if (!conteudoToken.isEmpty()){
-                var alunoId = UUID.fromString(conteudoToken);
-                var alunoOptional = alunoRepository.findById(alunoId);
-                
-                if (alunoOptional.isPresent()){
-                    var aluno = alunoOptional.get();
-
-                    var auth = new UsernamePasswordAuthenticationToken(aluno, null, null);
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
-            }
+            jwtService.validateToken(token)
+                    .map(UUID::fromString)
+                    .flatMap(alunoRepository::findById)
+                    .ifPresent(aluno -> {
+                        var auth = new UsernamePasswordAuthenticationToken(aluno, null, List.of());
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    });
         }
 
         filterChain.doFilter(request, response);
