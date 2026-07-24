@@ -1,0 +1,8 @@
+package com.projeto.matriculafacil.exception;
+
+public class RecursoNaoEncontradoException extends RuntimeException {
+
+    public RecursoNaoEncontradoException(String mensagem) {
+        super(mensagem);
+    }
+}
