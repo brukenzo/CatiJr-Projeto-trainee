@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.projeto.matriculafacil.matricula.MatriculaModel;
 import com.projeto.matriculafacil.aluno.AlunoModel;
-import com.projeto.matriculafacil.aluno.IAlunoRepository;
-import com.projeto.matriculafacil.materia.IMateriaRepository;
+import com.projeto.matriculafacil.aluno.AlunoRepository;
+import com.projeto.matriculafacil.materia.MateriaRepository;
 import com.projeto.matriculafacil.materia.MateriaModel;
 import com.projeto.matriculafacil.matricula.IMatriculaRepository;
 
@@ -18,10 +18,10 @@ import com.projeto.matriculafacil.matricula.IMatriculaRepository;
 public class DataInitializerSeed implements CommandLineRunner{
     
     @Autowired
-    private IMateriaRepository materiaRepository;
+    private MateriaRepository materiaRepository;
 
     @Autowired
-    private IAlunoRepository alunoRepository;
+    private AlunoRepository alunoRepository;
 
     @Autowired
     private IMatriculaRepository matriculaRepository;

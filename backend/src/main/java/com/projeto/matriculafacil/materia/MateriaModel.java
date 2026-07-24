@@ -5,19 +5,24 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Entity(name = "tb_materia")
+@Getter
+@Setter
+@Entity
+@Table(name = "tb_materia")
 public class MateriaModel {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID materiaID;
 
-    @Column(unique = true)
-    private String codigoMateria;
+    @Column(unique = true) 
+    private String codigoMateria; // Permite um único código de matéria
 
     private String nome;
     private int credito;

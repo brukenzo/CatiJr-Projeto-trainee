@@ -1,6 +1,7 @@
 package com.projeto.matriculafacil.materia;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,31 +10,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projeto.matriculafacil.dto.MateriaRequestDto;
+import com.projeto.matriculafacil.dto.MateriaResponseDto;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/materia")
+@RequiredArgsConstructor
 public class MateriaController {
-    
-    @Autowired
-    private IMateriaRepository materiaRepository;
 
-    // Lógica para cadastrar uma matéria
-    @PostMapping("/")
-    public ResponseEntity create(@RequestBody MateriaModel materiaModel){
-        var materia = this.materiaRepository.findByCodigoMateria(materiaModel.getCodigoMateria());
+    private final MateriaService materiaService;
 
-        if (materia.isPresent()){ // A matéria já está cadastrada
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Já existe uma matéria cadastrada com este código");
-        }
-
-        var materiaCriada = this.materiaRepository.save(materiaModel);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(materiaCriada);
+    @PostMapping
+    public ResponseEntity<MateriaResponseDto> create(@Valid @RequestBody MateriaRequestDto dto) {
+        var materiaCriada = materiaService.cadastrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(MateriaResponseDto.from(materiaCriada));
     }
 
-    // Retorna a lista com todas as disciplinas cadastradas
-    @GetMapping("/")
-    public ResponseEntity listAll(){
-        var materias = this.materiaRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<MateriaResponseDto>> listAll() {
+        var materias = materiaService.listarTodas().stream()
+                .map(MateriaResponseDto::from)
+                .toList();
+
         return ResponseEntity.ok(materias);
     }
 }

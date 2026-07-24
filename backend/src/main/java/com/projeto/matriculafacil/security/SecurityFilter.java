@@ -1,6 +1,7 @@
 package com.projeto.matriculafacil.security;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.projeto.matriculafacil.aluno.IAlunoRepository;
+import com.projeto.matriculafacil.aluno.AlunoRepository;
 
 import io.jsonwebtoken.Jwt;
 import jakarta.servlet.FilterChain;
@@ -23,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityFilter extends OncePerRequestFilter{
     
     private final JwtService jwtService;
-    private final IAlunoRepository alunoRepository;
+    private final AlunoRepository alunoRepository;
 
     @Override // Faz a validação do token
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

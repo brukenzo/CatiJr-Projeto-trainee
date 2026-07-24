@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projeto.matriculafacil.materia.IMateriaRepository;
+import com.projeto.matriculafacil.materia.MateriaRepository;
 import com.projeto.matriculafacil.security.JwtService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.projeto.matriculafacil.dto.MatriculaRequestDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/matricula")
@@ -26,7 +29,7 @@ public class MatriculaController {
     private IMatriculaRepository matriculaRepository;
 
     @Autowired
-    private IMateriaRepository materiaRepository;
+    private MateriaRepository materiaRepository;
 
     @Autowired
     private JwtService jwtService;
@@ -126,6 +129,5 @@ public class MatriculaController {
         }
         return false;
     }
-
 }
 

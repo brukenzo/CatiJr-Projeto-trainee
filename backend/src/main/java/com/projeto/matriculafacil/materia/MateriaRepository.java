@@ -4,6 +4,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IMateriaRepository extends JpaRepository<MateriaModel, UUID> {
+public interface MateriaRepository extends JpaRepository<MateriaModel, UUID> {
     Optional<MateriaModel> findByCodigoMateria(String codigoMateria);
 }
