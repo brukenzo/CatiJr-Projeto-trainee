@@ -25,7 +25,7 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
       })
 
       if (resposta.ok){
-        const token = await resposta.text()
+        const { token } = await resposta.json()
         localStorage.setItem('token_jwt', token)
         onNavigate?.('dashboard')
       }

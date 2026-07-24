@@ -29,7 +29,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
     }
 
     try {
-      const resposta = await fetch('http://localhost:8080/aluno/', {
+      const resposta = await fetch('http://localhost:8080/aluno', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
