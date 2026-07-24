@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/aluno")
+@RequiredArgsConstructor
 public class AlunoController {
     
     private final AlunoService alunoService;

@@ -11,7 +11,7 @@ import com.projeto.matriculafacil.aluno.AlunoModel;
 import com.projeto.matriculafacil.aluno.AlunoRepository;
 import com.projeto.matriculafacil.materia.MateriaRepository;
 import com.projeto.matriculafacil.materia.MateriaModel;
-import com.projeto.matriculafacil.matricula.IMatriculaRepository;
+import com.projeto.matriculafacil.matricula.MatriculaRepository;
 
 // Inicializa o banco de dados com algumas matérias
 @Configuration
@@ -24,7 +24,7 @@ public class DataInitializerSeed implements CommandLineRunner{
     private AlunoRepository alunoRepository;
 
     @Autowired
-    private IMatriculaRepository matriculaRepository;
+    private MatriculaRepository matriculaRepository;
 
     @Override
     public void run(String... args) throws Exception {
