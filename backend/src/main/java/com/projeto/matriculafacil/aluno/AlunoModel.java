@@ -27,4 +27,7 @@ public class AlunoModel {
     private String nome;
     private String senha;
     private int creditoDoSemestre;
+
+    // Vai ser utilizado para salvar temporariamente o código de recuperação gerado
+    private String codigoRecuperacao; 
 }

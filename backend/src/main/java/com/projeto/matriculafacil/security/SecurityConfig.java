@@ -29,9 +29,9 @@ public class SecurityConfig {
             .cors(cors -> {})
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Deixa público apenas a rota /aluno e /aluno/login
+                // Deixa público apenas as rotas para cadastro, login, redefinir senha e enviar código de verificação (para redefinição de senha)
                 // Para acessar as outras rotas é necessário autenticação com JWT
-                .requestMatchers(HttpMethod.POST, "/aluno", "/aluno/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/aluno", "/aluno/login", "/aluno/esqueci-senha", "/aluno/redefinir-senha").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
