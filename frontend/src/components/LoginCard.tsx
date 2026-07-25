@@ -77,7 +77,15 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           icon={<LockIcon />}
           type="password"
           placeholder="••••••••"
-          rightElement="Esqueceu a senha?"
+          rightElement={
+            <button
+              type="button"
+              onClick={() => onNavigate?.('forgot-password')}
+              className="text-brand-primary hover:underline"
+            >
+              Esqueceu a senha?
+            </button>
+          }
           value={senha}
           onChange={(e: any) => setSenha(e.target.value)}
         />
