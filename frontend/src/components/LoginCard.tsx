@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, ArrowRightIcon } from '../assets/icons'
 import InputField from './InputField'
+import { api } from '../services/api'
 import { Page } from '../types'
 
 interface LoginCardProps {
@@ -15,27 +16,18 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    try{
+    try {
       setMensagem('')
 
-      const resposta = await fetch('http://localhost:8080/aluno/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ email: email, senha: senha })
-      })
-
-      if (resposta.ok){
-        const { token } = await resposta.json()
-        localStorage.setItem('token_jwt', token)
-        onNavigate?.('dashboard')
+      const { token } = await api.auth.login(email, senha)
+      localStorage.setItem('token_jwt', token)
+      onNavigate?.('dashboard')
+    } catch (erro: unknown) {
+      if (erro instanceof Error) {
+        setMensagem(erro.message)
+      } else {
+        setMensagem('Erro de conexão com o servidor')
       }
-      else{
-        const mensagem = await resposta.text()
-        setMensagem(mensagem)
-      }
-
-    } catch (erro) {
-      setMensagem('Erro de conexão com o servidor')
     }
   }
 

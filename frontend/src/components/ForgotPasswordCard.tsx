@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EmailIcon, ArrowRightIcon } from '../assets/icons'
 import InputField from './InputField'
+import { api } from '../services/api'
 import { Page } from '../types'
 
 interface ForgotPasswordCardProps {
@@ -20,24 +21,18 @@ export default function ForgotPasswordCard({ onNavigate }: ForgotPasswordCardPro
     setCarregando(true)
 
     try {
-      const resposta = await fetch('http://localhost:8080/aluno/esqueci-senha', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      })
-
-      if (resposta.ok) {
-        setMensagemSucesso('Código gerado com sucesso')
-        
-        setTimeout(() => {
-          onNavigate?.('reset-password', email)
-        }, 1500)
+      await api.auth.esqueciSenha(email)
+      setMensagemSucesso('Código gerado com sucesso')
+      
+      setTimeout(() => {
+        onNavigate?.('reset-password', email)
+      }, 1500)
+    } catch (erro: unknown) {
+      if (erro instanceof Error) {
+        setMensagemErro(erro.message || 'E-mail não encontrado no sistema.')
       } else {
-        const texto = await resposta.text()
-        setMensagemErro(texto || 'E-mail não encontrado no sistema.')
+        setMensagemErro('Erro de conexão com o servidor')
       }
-    } catch (erro) {
-      setMensagemErro('Erro de conexão com o servidor')
     } finally {
       setCarregando(false)
     }

@@ -1,11 +1,12 @@
 import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
+import { api } from '../services/api'
 import { Page } from '../types'
 
 interface ResetPasswordCardProps {
   onNavigate?: (page: Page) => void
-  emailInicial?: string // Preenche o campo do email com o email giditado
+  emailInicial?: string
 }
 
 export default function ResetPasswordCard({ onNavigate, emailInicial = '' }: ResetPasswordCardProps) {
@@ -32,24 +33,18 @@ export default function ResetPasswordCard({ onNavigate, emailInicial = '' }: Res
     setCarregando(true)
 
     try {
-      const resposta = await fetch('http://localhost:8080/aluno/redefinir-senha', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, codigo, novaSenha: senha })
-      })
-
-      if (resposta.ok) {
-        setMensagemSucesso('Senha redefinida com sucesso')
-        
-        setTimeout(() => {
-          onNavigate?.('login')
-        }, 2000)
+      await api.auth.redefinirSenha(email, codigo, senha)
+      setMensagemSucesso('Senha redefinida com sucesso')
+      
+      setTimeout(() => {
+        onNavigate?.('login')
+      }, 2000)
+    } catch (erro: unknown) {
+      if (erro instanceof Error) {
+        setMensagemErro(erro.message || 'Código inválido ou expirado.')
       } else {
-        const texto = await resposta.text()
-        setMensagemErro(texto || 'Código inválido ou expirado.')
+        setMensagemErro('Erro de conexão com o servidor')
       }
-    } catch (erro) {
-      setMensagemErro('Erro de conexão com o servidor')
     } finally {
       setCarregando(false)
     }

@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
+import { api } from '../services/api'
 import { Page } from '../types'
 
 interface SignupCardProps {
@@ -29,27 +30,18 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
     }
 
     try {
-      const resposta = await fetch('http://localhost:8080/aluno', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nome: nome, email: email, senha: senha })
-      })
-
-      if (resposta.ok) {
-        setMensagemSucesso('Conta criada com sucesso')
-        
-        setTimeout(() => {
-          onNavigate?.('login')
-        }, 2000)
+      await api.auth.cadastrar(nome, email, senha)
+      setMensagemSucesso('Conta criada com sucesso')
+      
+      setTimeout(() => {
+        onNavigate?.('login')
+      }, 2000)
+    } catch (erro: unknown) {
+      if (erro instanceof Error) {
+        setMensagemErro(erro.message || 'Erro ao criar conta. Tente novamente.')
       } else {
-        const textoDoJava = await resposta.text()
-        setMensagemErro(textoDoJava || 'Erro ao criar conta. Tente novamente.')
+        setMensagemErro('Erro de conexão com o servidor')
       }
-
-    } catch (erro) {
-      setMensagemErro('Erro de conexão com o servidor')
     }
   }
 
