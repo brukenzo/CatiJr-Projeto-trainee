@@ -33,7 +33,7 @@ export default function ResetPasswordCard({ onNavigate, emailInicial = '' }: Res
 
     try {
       const resposta = await fetch('http://localhost:8080/aluno/redefinir-senha', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, codigo, novaSenha: senha })
       })
