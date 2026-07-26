@@ -1,10 +1,14 @@
 package com.projeto.matriculafacil.matricula;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.projeto.matriculafacil.aluno.AlunoModel;
+import com.projeto.matriculafacil.dto.MateriaResponseDto;
 import com.projeto.matriculafacil.dto.MatriculaRequestDto;
 import com.projeto.matriculafacil.exception.RecursoNaoEncontradoException;
 import com.projeto.matriculafacil.exception.RegraDeNegocioException;
@@ -114,5 +118,31 @@ public class MatriculaService {
             }
         }
         return false;
+    }
+
+    // Método para devolver a lista de matérias inscritas
+    public List<MateriaResponseDto> getMinhasMatriculas(AlunoModel aluno) {
+        var historico = matriculaRepository.findByAlunoID(aluno.getAlunoID());
+
+        List<UUID> idMateriaInscrita = new ArrayList<>();
+        for (MatriculaModel matricula : historico) {
+            if (STATUS_INSCRITA.equals(matricula.getStatus())) {
+                idMateriaInscrita.add(matricula.getMateriaID());
+            }
+        }
+
+        // Se não tem matérias inscrita retorna vazio
+        if (idMateriaInscrita.isEmpty()) {
+            return List.of();
+        }
+
+        var materias = materiaRepository.findAllById(idMateriaInscrita);
+
+        List<MateriaResponseDto> minhasMatriculas = new ArrayList<>();
+        for (MateriaModel materia : materias) {
+            minhasMatriculas.add(MateriaResponseDto.from(materia)); 
+        }
+
+        return minhasMatriculas;
     }
 }
