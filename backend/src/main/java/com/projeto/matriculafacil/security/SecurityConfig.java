@@ -31,7 +31,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Deixa público apenas as rotas para cadastro, login, redefinir senha e enviar código de verificação (para redefinição de senha)
                 // Para acessar as outras rotas é necessário autenticação com JWT
-                .requestMatchers(HttpMethod.POST, "/aluno", "/aluno/login", "/aluno/esqueci-senha", "/aluno/redefinir-senha").permitAll()
+                .requestMatchers(HttpMethod.POST, "/aluno", "/aluno/login", "/aluno/esqueci-senha").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/aluno/redefinir-senha").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
