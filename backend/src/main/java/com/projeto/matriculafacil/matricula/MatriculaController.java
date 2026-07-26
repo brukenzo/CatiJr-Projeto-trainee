@@ -1,11 +1,14 @@
 package com.projeto.matriculafacil.matricula;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +41,17 @@ public class MatriculaController {
     @GetMapping("/minhas-matriculas")
     public ResponseEntity<List<MateriaResponseDto>> listarMinhasMatriculas(
             @AuthenticationPrincipal AlunoModel aluno) {
+
         var materias = matriculaService.getMinhasMatriculas(aluno);
         return ResponseEntity.ok(materias);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> desinscrever(
+        @PathVariable UUID id,
+        @AuthenticationPrincipal AlunoModel aluno) {
+
+        matriculaService.desinscrever(aluno, id);
+        return ResponseEntity.noContent().build();
     }
 }

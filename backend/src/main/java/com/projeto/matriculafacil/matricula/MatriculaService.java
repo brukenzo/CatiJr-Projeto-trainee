@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.projeto.matriculafacil.aluno.AlunoModel;
+import com.projeto.matriculafacil.aluno.AlunoRepository;
 import com.projeto.matriculafacil.dto.MateriaResponseDto;
 import com.projeto.matriculafacil.dto.MatriculaRequestDto;
 import com.projeto.matriculafacil.exception.RecursoNaoEncontradoException;
@@ -28,9 +29,10 @@ public class MatriculaService {
 
     private final MatriculaRepository matriculaRepository;
     private final MateriaRepository materiaRepository;
+    private final AlunoRepository alunoRepository;
 
+    // Método para inscrever aluno em uma matéria
     public MatriculaModel inscrever(AlunoModel aluno, MatriculaRequestDto dto) {
-
         var materia = materiaRepository.findById(dto.materiaID())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Matéria não encontrada no catálogo"));
 
@@ -46,9 +48,12 @@ public class MatriculaService {
         novaMatricula.setMateriaID(materia.getMateriaID());
         novaMatricula.setStatus(STATUS_INSCRITA);
 
+        aluno.setCreditoDoSemestre(aluno.getCreditoDoSemestre() + materia.getCredito());
+        alunoRepository.save(aluno);
+
         return matriculaRepository.save(novaMatricula);
     }
-
+    
     private void validarPreRequisito(AlunoModel aluno, MateriaModel materia) {
         var preRequisito = materia.getPreRequisito();
 
@@ -66,7 +71,7 @@ public class MatriculaService {
             throw new RegraDeNegocioException("Você precisa concluir " + preRequisito + " antes de cursar esta matéria");
         }
     }
-
+    
     private void validarConflitoDeHorarioELimiteDeCreditos(AlunoModel aluno, MateriaModel materiaDesejada) {
         var historico = matriculaRepository.findByAlunoID(aluno.getAlunoID());
 
@@ -93,16 +98,22 @@ public class MatriculaService {
         }
     }
 
-    // Verifica se dois horários (formato "Seg 08:00 - 12:00, Qui 14:00 - 16:00") se sobrepõem
+    // Verifica se dois horários se sobrepõem
+    // Horário está no formato: "Seg 08:00 - 12:00, Qui 14:00 - 16:00"
     private boolean temConflito(String horario1, String horario2) {
+        // Separa o horário se tiver vírugla
+        // "Seg 08:00 - 12:00, Qui 14:00 - 16:00" -> "Seg 08:00 - 12:00", "Qui 14:00 - 16:00"
         String[] bloco1 = horario1.split(",");
         String[] bloco2 = horario2.split(",");
 
         for (String b1 : bloco1) {
             for (String b2 : bloco2) {
+                // Separa o horário em partes
+                // "Seg 08:00 - 12:00" -> {"Seg", "08:00", "-", "12:00"}
                 String[] parteHorario1 = b1.trim().split(" ");
                 String[] parteHorario2 = b2.trim().split(" ");
 
+                // Se os dias da semana forem diferentes, não tem como ter conflito de horário
                 if (!parteHorario1[0].equalsIgnoreCase(parteHorario2[0])) {
                     continue;
                 }
@@ -112,6 +123,7 @@ public class MatriculaService {
                 LocalTime inicio2 = LocalTime.parse(parteHorario2[1]);
                 LocalTime fim2 = LocalTime.parse(parteHorario2[3]);
 
+                // Verifica se os horários se conflitam
                 if (inicio1.isBefore(fim2) && fim1.isAfter(inicio2)) {
                     return true;
                 }
@@ -144,5 +156,23 @@ public class MatriculaService {
         }
 
         return minhasMatriculas;
+    }
+
+    // Método para desmatricular aluno de uma matéria
+    public void desinscrever (AlunoModel aluno, UUID materiaId){
+        var matricula = matriculaRepository.findByAlunoIDAndMateriaID(aluno.getAlunoID(), materiaId)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Matrícula não encontrada"));
+        
+        if (!STATUS_INSCRITA.equals(matricula.getStatus())){
+            throw new RegraDeNegocioException("Só é possível cancelar matrícula em matérias que você está inscrito");
+        }
+        
+        var materia = materiaRepository.findById(materiaId)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Matéria não encontrada"));
+
+        aluno.setCreditoDoSemestre(aluno.getCreditoDoSemestre() - materia.getCredito()); 
+        alunoRepository.save(aluno);
+
+        matriculaRepository.delete(matricula);
     }
 }
