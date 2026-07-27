@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import { GraduationCapIcon, MenuIcon } from '../assets/icons'
-import { User } from '../types'
+
+export type DashboardTab = 'minhas-matriculas' | 'catalogo'
 
 interface DashboardHeaderProps {
-  user: User
+  nome: string
+  periodo?: string
+  activeTab: DashboardTab
+  onTabChange: (tab: DashboardTab) => void
+  onLogout?: () => void
 }
 
 interface NavLink {
   label: string
-  href: string
-  active: boolean
+  tab: DashboardTab
 }
 
 function getInitials(name: string): string {
@@ -20,11 +24,12 @@ function getInitials(name: string): string {
     .join('')
 }
 
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader({ nome, periodo, activeTab, onTabChange, onLogout }: DashboardHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks: NavLink[] = [
-    { label: 'Catálogo', href: '#', active: true },
+    { label: 'Minhas Matérias', tab: 'minhas-matriculas' },
+    { label: 'Catálogo', tab: 'catalogo' },
   ]
 
   return (
@@ -45,18 +50,18 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           {/* Nav links — desktop */}
           <nav className="hidden md:flex justify-items-start gap-1">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
+              <button
+                key={link.tab}
+                onClick={() => onTabChange(link.tab)}
                 className={[
                   'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                  link.active
+                  link.tab === activeTab
                     ? 'bg-brand-light text-brand-primary'
                     : 'text-ui-medium hover:bg-ui-bg hover:text-ui-dark',
                 ].join(' ')}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
 
@@ -64,17 +69,26 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           <div className="flex items-center gap-3">
 
             {/* User badge */}
-            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center shrink-0">
                 <span className="text-white text-xs font-semibold leading-none">
-                  {getInitials(user.name)}
+                  {getInitials(nome)}
                 </span>
               </div>
               <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-sm font-medium text-ui-dark">{user.name}</span>
-                <span className="text-xs text-ui-muted">{user.periodo}</span>
+                <span className="text-sm font-medium text-ui-dark">{nome}</span>
+                {periodo && <span className="text-xs text-ui-muted">{periodo}</span>}
               </div>
             </div>
+
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-sm text-ui-muted hover:text-red-600 transition-colors hidden sm:block"
+              >
+                Sair
+              </button>
+            )}
 
             {/* Mobile menu toggle */}
             <button
@@ -90,18 +104,21 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         {mobileMenuOpen && (
           <nav className="md:hidden border-t border-ui-border py-2 flex flex-col gap-1">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
+              <button
+                key={link.tab}
+                onClick={() => {
+                  onTabChange(link.tab)
+                  setMobileMenuOpen(false)
+                }}
                 className={[
-                  'px-4 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  link.active
+                  'px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left',
+                  link.tab === activeTab
                     ? 'bg-brand-light text-brand-primary'
                     : 'text-ui-medium hover:bg-ui-bg',
                 ].join(' ')}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
         )}

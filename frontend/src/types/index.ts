@@ -22,11 +22,13 @@ export interface MateriaResponse {
   preRequisito: string
   professor: string
   descricao: string
+  disponivel: boolean
 }
 
 export interface MatriculaResponse {
   matriculaID: string
-  materia: MateriaResponse
+  alunoID: string
+  materiaID: string
   status: string
 }
 

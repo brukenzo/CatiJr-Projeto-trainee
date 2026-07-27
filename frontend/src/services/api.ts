@@ -71,7 +71,7 @@ export const api = {
     },
   },
 
-  matricula: {
+    matricula: {
     inscrever(materiaID: string) {
       return request<MatriculaResponse>('/matricula/inscrever', {
         method: 'POST',
@@ -81,7 +81,13 @@ export const api = {
     },
 
     minhasMatriculas() {
-      return request<MatriculaResponse[]>('/matricula/minhas-matriculas', {
+      return request<MateriaResponse[]>('/matricula/minhas-matriculas', {
+        headers: headers(true),
+      })
+    },
+
+    historico() {
+      return request<MatriculaResponse[]>('/matricula/historico', {
         headers: headers(true),
       })
     },

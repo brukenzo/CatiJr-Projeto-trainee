@@ -20,7 +20,7 @@ export default function App() {
   }
 
   if (page === 'signup') return <SignupPage onNavigate={handleNavigate} />
-  if (page === 'dashboard') return <DashboardPage />
+  if (page === 'dashboard') return <DashboardPage onNavigate={handleNavigate} />
   if (page === 'forgot-password') return <ForgotPasswordPage onNavigate={handleNavigate} />
   if (page === 'reset-password') return <ResetPasswordPage onNavigate={handleNavigate} emailInicial={emailRecuperacao} />
 
