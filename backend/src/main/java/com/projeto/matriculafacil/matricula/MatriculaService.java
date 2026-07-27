@@ -41,8 +41,13 @@ public class MatriculaService {
             throw new RegraDeNegocioException("Esta matéria não está disponível neste semestre");
         }
 
-        if (matriculaRepository.findByAlunoIDAndMateriaID(aluno.getAlunoID(), materia.getMateriaID()).isPresent()) {
-            throw new RegraDeNegocioException("Você está inscrito ou já estava inscrito nesta disciplina");
+        var existe = matriculaRepository.findByAlunoIDAndMateriaID(aluno.getAlunoID(), materia.getMateriaID());
+        if (existe.isPresent()) {
+            String status = existe.get().getStatus();
+            if (status.equals(STATUS_CONCLUIDA))
+                throw new RegraDeNegocioException("Você já concluiu esta disciplina");
+            else if (status.equals(STATUS_INSCRITA))
+                throw new RegraDeNegocioException("Você já está inscrito nesta disciplina");
         }
 
         validarPreRequisito(aluno, materia);
