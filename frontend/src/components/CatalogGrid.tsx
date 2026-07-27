@@ -3,6 +3,7 @@ import CatalogCard from './CatalogCard'
 
 interface CatalogGridProps {
   materias: MateriaResponse[]
+  todasMaterias: MateriaResponse[]
   codigosConcluidos: string[]
   codigosInscritos: string[]
   creditosAtuais: number
@@ -39,6 +40,7 @@ function temConflito(
 
 export default function CatalogGrid({
   materias,
+  todasMaterias,
   codigosConcluidos,
   codigosInscritos,
   creditosAtuais,
@@ -58,7 +60,7 @@ export default function CatalogGrid({
         const creditosEstourados = !inscrito && !indisponivel && creditosFuturos > 24
 
         const conflitoHorario = !inscrito && !indisponivel && codigosInscritos.some((codigo) => {
-          const inscrita = materias.find((m) => m.codigoMateria === codigo)
+          const inscrita = todasMaterias.find((m) => m.codigoMateria === codigo)
           return inscrita ? temConflito(materia.horario, inscrita.horario) : false
         })
 

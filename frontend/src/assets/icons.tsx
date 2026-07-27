@@ -77,6 +77,15 @@ export function MenuIcon() {
   )
 }
 
+export function SearchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="7.5" cy="7.5" r="5.75" stroke="#777587" strokeWidth="1.5" />
+      <path d="M12 12L16 16" stroke="#777587" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export function EyeOffIcon() {
   return (
     <svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">

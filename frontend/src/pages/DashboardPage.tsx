@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import DashboardHeader, { type DashboardTab } from '../components/DashboardHeader'
 import CatalogHeading from '../components/CatalogHeading'
 import CatalogGrid from '../components/CatalogGrid'
 import MinhasMatriculasView from '../components/MinhasMatriculasView'
 import ModalDetalhes from '../components/ModalDetalhes'
+import { SearchIcon } from '../assets/icons'
 import { api } from '../services/api'
 import type { MateriaResponse, AlunoPerfil, MatriculaResponse, Page } from '../types'
 
@@ -23,6 +24,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [mensagemCatalogo, setMensagemCatalogo] = useState('')
   const [carregandoAcao, setCarregandoAcao] = useState(false)
   const [materiaDetalhe, setMateriaDetalhe] = useState<MateriaResponse | null>(null)
+  const [termoBusca, setTermoBusca] = useState('')
 
   async function carregarDados() {
     try {
@@ -105,6 +107,16 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     )
     .map((m) => m.codigoMateria)
 
+  const materiasFiltradas = useMemo(() => {
+    const termo = termoBusca.trim().toLowerCase()
+    if (!termo) return materias
+    return materias.filter(
+      (m) =>
+        m.nome.toLowerCase().includes(termo) ||
+        m.codigoMateria.toLowerCase().includes(termo)
+    )
+  }, [materias, termoBusca])
+
   if (loading) {
     return (
       <div className="min-h-screen bg-ui-bg flex items-center justify-center">
@@ -153,6 +165,25 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
           <>
             <CatalogHeading semestre="2026.1" />
 
+            <div className="mt-5 relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <SearchIcon />
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar por nome ou código..."
+                value={termoBusca}
+                onChange={(e) => setTermoBusca(e.target.value)}
+                className="w-full pl-[50px] pr-4 py-3 bg-white border border-ui-border rounded-lg text-base text-ui-dark placeholder:text-ui-muted outline-none transition-colors focus:border-brand-primary"
+              />
+            </div>
+
+            {termoBusca.trim() && materiasFiltradas.length === 0 && (
+              <p className="mt-6 text-center text-ui-muted text-sm">
+                Nenhuma matéria encontrada para "{termoBusca.trim()}"
+              </p>
+            )}
+
             {mensagemCatalogo && (
               <div
                 className={`mt-4 p-3 rounded-lg text-sm border text-center font-medium ${
@@ -173,7 +204,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
             <div className="mt-6">
               <CatalogGrid
-                materias={materias}
+                materias={materiasFiltradas}
+                todasMaterias={materias}
                 codigosConcluidos={codigosConcluidos}
                 codigosInscritos={codigosInscritos}
                 creditosAtuais={perfil?.creditoDoSemestre ?? 0}
