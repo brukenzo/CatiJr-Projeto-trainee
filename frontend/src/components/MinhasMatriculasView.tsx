@@ -27,7 +27,7 @@ export default function MinhasMatriculasView({
     <div>
       <div className="flex flex-col gap-1">
         <h1 className="font-bold text-[28px] sm:text-[32px] text-ui-dark tracking-tight leading-tight">
-          Minhas Matérias
+          Minhas Inscrições
         </h1>
         <p className="text-base text-ui-muted leading-6">
           {creditosAtuais} / 24 créditos utilizados neste semestre

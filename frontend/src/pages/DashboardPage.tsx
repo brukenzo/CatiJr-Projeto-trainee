@@ -3,6 +3,7 @@ import DashboardHeader, { type DashboardTab } from '../components/DashboardHeade
 import CatalogHeading from '../components/CatalogHeading'
 import CatalogGrid from '../components/CatalogGrid'
 import MinhasMatriculasView from '../components/MinhasMatriculasView'
+import MeuPerfilView from '../components/MeuPerfilView'
 import ModalDetalhes from '../components/ModalDetalhes'
 import { SearchIcon } from '../assets/icons'
 import { api } from '../services/api'
@@ -13,7 +14,7 @@ interface DashboardPageProps {
 }
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<DashboardTab>('minhas-matriculas')
+  const [activeTab, setActiveTab] = useState<DashboardTab>('meu-perfil')
   const [perfil, setPerfil] = useState<AlunoPerfil | null>(null)
   const [materias, setMaterias] = useState<MateriaResponse[]>([])
   const [inscritas, setInscritas] = useState<MateriaResponse[]>([])
@@ -151,7 +152,15 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {activeTab === 'minhas-matriculas' ? (
+        {activeTab === 'meu-perfil' && (
+          <MeuPerfilView
+            perfil={perfil}
+            materias={materias}
+            historico={historico}
+          />
+        )}
+
+        {activeTab === 'minhas-matriculas' && (
           <MinhasMatriculasView
             inscritas={inscritas}
             creditosAtuais={perfil?.creditoDoSemestre ?? 0}
@@ -161,7 +170,9 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
             onVerCatalogo={() => setActiveTab('catalogo')}
             onFecharMensagem={() => setMensagem('')}
           />
-        ) : (
+        )}
+
+        {activeTab === 'catalogo' && (
           <>
             <CatalogHeading semestre="2026.1" />
 

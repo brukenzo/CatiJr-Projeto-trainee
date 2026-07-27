@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { GraduationCapIcon, MenuIcon } from '../assets/icons'
 
-export type DashboardTab = 'minhas-matriculas' | 'catalogo'
+export type DashboardTab = 'meu-perfil' | 'minhas-matriculas' | 'catalogo'
 
 interface DashboardHeaderProps {
   nome: string
@@ -28,7 +28,8 @@ export default function DashboardHeader({ nome, periodo, activeTab, onTabChange,
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks: NavLink[] = [
-    { label: 'Minhas Matérias', tab: 'minhas-matriculas' },
+    { label: 'Meu Perfil', tab: 'meu-perfil' },
+    { label: 'Minhas Inscrições', tab: 'minhas-matriculas' },
     { label: 'Catálogo', tab: 'catalogo' },
   ]
 
@@ -120,6 +121,17 @@ export default function DashboardHeader({ nome, periodo, activeTab, onTabChange,
                 {link.label}
               </button>
             ))}
+            {onLogout && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  onLogout()
+                }}
+                className="px-4 py-2.5 rounded-lg text-sm font-medium text-left text-red-600 hover:bg-red-50 transition-colors"
+              >
+                Sair
+              </button>
+            )}
           </nav>
         )}
       </div>
