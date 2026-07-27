@@ -46,6 +46,14 @@ public class MatriculaController {
         return ResponseEntity.ok(materias);
     }
 
+    @GetMapping("/historico")
+    public ResponseEntity<List<MatriculaResponseDto>> historico(
+        @AuthenticationPrincipal AlunoModel aluno) {
+    
+        var historico = matriculaService.getHistorico(aluno);
+    return ResponseEntity.ok(historico);
+}
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> desinscrever(
         @PathVariable UUID id,
