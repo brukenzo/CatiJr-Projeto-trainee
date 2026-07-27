@@ -31,4 +31,5 @@ public class MateriaModel {
     private String preRequisito;
     private String professor;
     private String descricao;
+    private boolean disponivel;
 }

@@ -11,6 +11,7 @@ import com.projeto.matriculafacil.aluno.AlunoModel;
 import com.projeto.matriculafacil.aluno.AlunoRepository;
 import com.projeto.matriculafacil.dto.MateriaResponseDto;
 import com.projeto.matriculafacil.dto.MatriculaRequestDto;
+import com.projeto.matriculafacil.dto.MatriculaResponseDto;
 import com.projeto.matriculafacil.exception.RecursoNaoEncontradoException;
 import com.projeto.matriculafacil.exception.RegraDeNegocioException;
 import com.projeto.matriculafacil.materia.MateriaModel;
@@ -35,6 +36,10 @@ public class MatriculaService {
     public MatriculaModel inscrever(AlunoModel aluno, MatriculaRequestDto dto) {
         var materia = materiaRepository.findById(dto.materiaID())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Matéria não encontrada no catálogo"));
+
+        if (!materia.isDisponivel()) {
+            throw new RegraDeNegocioException("Esta matéria não está disponível neste semestre");
+        }
 
         if (matriculaRepository.findByAlunoIDAndMateriaID(aluno.getAlunoID(), materia.getMateriaID()).isPresent()) {
             throw new RegraDeNegocioException("Você está inscrito ou já estava inscrito nesta disciplina");
@@ -156,6 +161,13 @@ public class MatriculaService {
         }
 
         return minhasMatriculas;
+    }
+
+    public List<MatriculaResponseDto> getHistorico(AlunoModel aluno) {
+        return matriculaRepository.findByAlunoID(aluno.getAlunoID())
+                .stream()
+                .map(MatriculaResponseDto::from)
+                .toList();
     }
 
     // Método para desmatricular aluno de uma matéria

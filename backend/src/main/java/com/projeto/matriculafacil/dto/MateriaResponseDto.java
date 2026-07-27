@@ -13,7 +13,8 @@ public record MateriaResponseDto(
         String horario,
         String preRequisito,
         String professor,
-        String descricao
+        String descricao,
+        boolean disponivel
 ) {
 
     public static MateriaResponseDto from(MateriaModel materia) {
@@ -26,7 +27,8 @@ public record MateriaResponseDto(
                 materia.getHorario(),
                 materia.getPreRequisito(),
                 materia.getProfessor(),
-                materia.getDescricao()
+                materia.getDescricao(),
+                materia.isDisponivel()
         );
     }
 }

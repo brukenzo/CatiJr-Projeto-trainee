@@ -23,7 +23,8 @@ public record MateriaRequestDto(
         String horario,
         String preRequisito,
         String professor,
-        String descricao
+        String descricao,
+        boolean disponivel
 ) {
 
     public MateriaModel toModel() {
@@ -36,6 +37,7 @@ public record MateriaRequestDto(
         materia.setPreRequisito(preRequisito);
         materia.setProfessor(professor);
         materia.setDescricao(descricao);
+        materia.setDisponivel(disponivel);
         return materia;
     }
 }
