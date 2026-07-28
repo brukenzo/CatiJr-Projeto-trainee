@@ -1,6 +1,6 @@
 import type { LoginResponse, MateriaResponse, MatriculaResponse, AlunoPerfil } from '../types'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 function headers(comToken?: boolean): Record<string, string> {
   const h: Record<string, string> = { 'Content-Type': 'application/json' }

@@ -1,0 +1,11 @@
+# Segredos (assinatura JWT e informações do BD)
+.env
+
+# Build outputs
+backend/target/
+frontend/dist/
+frontend/node_modules/
+
+# IDE
+.idea/
+*.iml
