@@ -55,8 +55,11 @@ public class AlunoService {
     // Método para enviar o código de recuperação
     public void enviarCodigoValidacao(EsqueciSenhaRequestDto dto) {
 
-        var aluno = alunoRepository.findByEmail(dto.email())
-            .orElseThrow(CredenciaisInvalidasException::new);
+        var alunoOptional = alunoRepository.findByEmail(dto.email());
+        if (alunoOptional.isEmpty()) {
+            return;
+        }
+        var aluno = alunoOptional.get();
         
         // Gera um código aleatório
         Random random = new Random();
