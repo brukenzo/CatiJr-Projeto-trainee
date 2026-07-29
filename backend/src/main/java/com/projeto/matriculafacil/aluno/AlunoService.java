@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.projeto.matriculafacil.dto.AlunoCadastroDto;
 import com.projeto.matriculafacil.dto.AlunoLoginDto;
 import com.projeto.matriculafacil.dto.EsqueciSenhaRequestDto;
-import com.projeto.matriculafacil.dto.EsqueciSenhaResponseDto;
+import com.projeto.matriculafacil.dto.RedefinirSenhaRequestDto;
 import com.projeto.matriculafacil.exception.CredenciaisInvalidasException;
 import com.projeto.matriculafacil.exception.RegraDeNegocioException;
 import com.projeto.matriculafacil.security.JwtService;
@@ -76,7 +76,7 @@ public class AlunoService {
     }
 
     // Método para validar o código e alterar a senha
-    public void redefinirSenha(EsqueciSenhaResponseDto dto) {
+    public void redefinirSenha(RedefinirSenhaRequestDto dto) {
         
         var aluno = alunoRepository.findByEmail(dto.email())
             .orElseThrow(CredenciaisInvalidasException::new);

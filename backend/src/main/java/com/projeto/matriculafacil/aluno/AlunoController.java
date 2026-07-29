@@ -14,7 +14,7 @@ import com.projeto.matriculafacil.dto.AlunoCadastroDto;
 import com.projeto.matriculafacil.dto.AlunoLoginDto;
 import com.projeto.matriculafacil.dto.AlunoResponseDto;
 import com.projeto.matriculafacil.dto.EsqueciSenhaRequestDto;
-import com.projeto.matriculafacil.dto.EsqueciSenhaResponseDto;
+import com.projeto.matriculafacil.dto.RedefinirSenhaRequestDto;
 import com.projeto.matriculafacil.dto.LoginResponseDto;
 
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ public class AlunoController {
     }
 
     @PutMapping("/redefinir-senha")
-    public ResponseEntity<Void> redefinirSenha(@Valid @RequestBody EsqueciSenhaResponseDto dto) {
+    public ResponseEntity<Void> redefinirSenha(@Valid @RequestBody RedefinirSenhaRequestDto dto) {
         alunoService.redefinirSenha(dto);
         return ResponseEntity.ok().build();
     }
