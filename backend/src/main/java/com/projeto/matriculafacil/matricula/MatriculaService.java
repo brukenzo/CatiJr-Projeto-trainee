@@ -53,15 +53,19 @@ public class MatriculaService {
         validarPreRequisito(aluno, materia);
         validarConflitoDeHorarioELimiteDeCreditos(aluno, materia);
 
-        var novaMatricula = new MatriculaModel();
-        novaMatricula.setAlunoID(aluno.getAlunoID());
-        novaMatricula.setMateriaID(materia.getMateriaID());
-        novaMatricula.setStatus(STATUS_INSCRITA);
+        // Se o aluno já tem matrícula na matéria (aluno ficou reprovado) apenas atualiza, se não cria
+        var matricula = existe.orElseGet(() -> {
+            var nova = new MatriculaModel();
+            nova.setAlunoID(aluno.getAlunoID());
+            nova.setMateriaID(materia.getMateriaID());
+            return nova;
+        });
+        matricula.setStatus(STATUS_INSCRITA);
 
         aluno.setCreditoDoSemestre(aluno.getCreditoDoSemestre() + materia.getCredito());
         alunoRepository.save(aluno);
 
-        return matriculaRepository.save(novaMatricula);
+        return matriculaRepository.save(matricula);
     }
     
     private void validarPreRequisito(AlunoModel aluno, MateriaModel materia) {
